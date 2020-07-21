@@ -64,6 +64,12 @@
 		clock-output-names = "osc";
 	};
 
+	audioclk: ext26Mz { /* SAI5: Clock Configuration */
+		compatible = "fixed-clock";
+		clock-frequency = <26000000>;
+		#clock-cells = <0>;
+	};
+
 	modem_reset: modem-reset { /* BT: BT reset */
 		compatible = "gpio-reset";
 		reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
@@ -135,6 +141,16 @@
 		status = "okay";
 	};
 
+	sound { /* SAI5: SGTL5000: Audio Codec support */
+		compatible = "fsl,imx-audio-sgtl5000";
+		model = "sgtl5000-audio";
+		ssi-controller = <&sai5>;
+		audio-codec = <&codec>;
+		audio-routing = "MIC_IN", "Mic Jack",
+				"Mic Jack", "Mic Bias",
+				"Headphone Jack", "HP_OUT",
+				"LINE_IN", "Line In Jack";
+	};
 	iwg37m_common { /* SoC Board Setttings : Board Configuration GPIOs */
 		compatible = "iw,iwg37m-com";
 		pinctrl-names = "default";
@@ -143,6 +159,16 @@
 				&gpio4 27 0 &gpio2 19 0 &gpio2 20 0 >;
 		status = "okay";
 	};
+};
+
+&clk {
+	assigned-clocks = <&clk IMX8MN_AUDIO_PLL1>, <&clk IMX8MN_AUDIO_PLL2>;
+	assigned-clock-rates = <393216000>, <361267200>;
+};
+
+&easrc {
+	fsl,asrc-rate  = <48000>;
+	status = "okay";
 };
 
 &iomuxc {
@@ -292,6 +318,16 @@
 		pinctrl_rtc: rtcirq { /* RTC: IOMUX Pin Configuration */
 			fsl,pins = <
 				MX8MN_IOMUXC_NAND_DATA03_GPIO3_IO9		0x41 /* RTC Interrupt GPIO */
+			>;
+		};
+
+		pinctrl_sai5: sai5grp { /* SAI5: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_SAI5_MCLK_SAI5_MCLK		0xd6
+				MX8MN_IOMUXC_SAI5_RXD2_SAI5_TX_BCLK		0xd6
+				MX8MN_IOMUXC_SAI5_RXD1_SAI5_TX_SYNC		0xd6
+				MX8MN_IOMUXC_SAI5_RXD3_SAI5_TX_DATA0		0xd6
+				MX8MN_IOMUXC_SAI5_RXD0_SAI5_RX_DATA0    	0xd6
 			>;
 		};
 
@@ -681,6 +717,15 @@
 	pinctrl-0 = <&pinctrl_i2c2>;
 	status = "okay";
 
+	codec: sgtl5000@0a { /* Audio: SGTL5000 Audio Codec */
+		compatible = "fsl,sgtl5000";
+		reg = <0x0a>;
+		clocks = <&audioclk 0>;
+		VDDA-supply = <&reg_3p3v>;
+		VDDIO-supply = <&reg_3p3v>;
+		status = "okay";
+	};
+
 	stmpe0: stmpe811@44 { /* STMPE811: Carrier Board GPIO Expander */
                 compatible = "st,stmpe811";
 		#address-cells = <1>;
@@ -772,6 +817,21 @@
 		panel-height-mm = <122>;
 		status = "okay";
 	};
+};
+
+&sai5 { /* SAI5: Serial Audio Interface for Audio Codec */
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_sai5>;
+	assigned-clocks = <&clk IMX8MN_CLK_SAI5>;
+	assigned-clock-parents = <&clk IMX8MN_AUDIO_PLL1_OUT>;
+	assigned-clock-rates = <49152000>;
+	clocks = <&clk IMX8MN_CLK_SAI5_IPG>, <&clk IMX8MN_CLK_DUMMY>,
+		<&clk IMX8MN_CLK_SAI5_ROOT>, <&clk IMX8MN_CLK_DUMMY>,
+		<&clk IMX8MN_CLK_DUMMY>, <&clk IMX8MN_AUDIO_PLL1_OUT>,
+		<&clk IMX8MN_AUDIO_PLL2_OUT>;
+	clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3", "pll8k", "pll11k";
+	fsl,sai-asynchronous;
+	status = "okay";
 };
 
 &uart1 { /* UART1: Bluetooth */

@@ -495,7 +495,12 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
 
 	SOC_DOUBLE_TLV("Headphone Playback Volume",
 			SGTL5000_CHIP_ANA_HP_CTRL,
+#ifdef CONFIG_IWG37M
+/* IWG37M: SAI5: Fix for increasing play back volume */
+			1, 9,
+#else
 			0, 8,
+#endif
 			0x7f, 1,
 			headphone_volume),
 	SOC_SINGLE("Headphone Playback Switch", SGTL5000_CHIP_ANA_CTRL,
