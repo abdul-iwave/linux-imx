@@ -20,6 +20,11 @@
 	model = "iW-RainboW-G37M-i.MX8MN-SODIMM";
 	compatible = "fsl,imx8mn-iwg37m", "fsl,imx8mn";
 
+	aliases { /* SD/MMC: eMMC/SD slot numbering fix */
+                mmc0 = &usdhc3;
+                mmc1 = &usdhc2;
+        };
+
 	chosen {
 		bootargs = "console=ttymxc3,115200 earlycon=ec_imx6q,0x30a60000,115200";
 		stdout-path = &uart4;
@@ -148,6 +153,96 @@
 			fsl,pins = <
 				MX8MN_IOMUXC_UART4_RXD_UART4_DCE_RX		0x140
 				MX8MN_IOMUXC_UART4_TXD_UART4_DCE_TX		0x140
+			>;
+		};
+
+		pinctrl_usdhc2_gpio: usdhc2grpgpio { /* USDHC2: Carrier Micro SD: Card Detect GPIO IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_SD2_CD_B_GPIO2_IO12        	0x41 /* SD2 Card Detect GPIO */
+			>;
+		};
+
+		pinctrl_usdhc2: usdhc2grp { /* USDHC2: Carrier Micro SD: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK			0x190
+				MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d0
+				MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d0
+				MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d0
+				MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d0
+				MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d0
+				MX8MN_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
+			>;
+		};
+
+		pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
+			fsl,pins = <
+				MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK			0x194
+				MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d4
+				MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d4
+				MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d4
+				MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d4
+				MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d4
+				MX8MN_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
+			>;
+		};
+
+		pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
+			fsl,pins = <
+				MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK			0x196
+				MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d6
+				MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d6
+				MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d6
+				MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d6
+				MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d6
+				MX8MN_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x1d0
+			>;
+		};
+
+		pinctrl_usdhc3: usdhc3grp { /* USDHC3: EMMC: IOMUX Pin Configuration*/
+			fsl,pins = <
+				MX8MN_IOMUXC_NAND_WE_B_USDHC3_CLK		0x190
+				MX8MN_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d0
+				MX8MN_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d0
+				MX8MN_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d0
+				MX8MN_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d0
+				MX8MN_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d0
+				MX8MN_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x1d0
+				MX8MN_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d0
+				MX8MN_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d0
+				MX8MN_IOMUXC_NAND_CLE_USDHC3_DATA7		0x1d0
+				MX8MN_IOMUXC_NAND_CE1_B_USDHC3_STROBE 		0x190
+			>;
+		};
+
+		pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
+			fsl,pins = <
+				MX8MN_IOMUXC_NAND_WE_B_USDHC3_CLK		0x194
+				MX8MN_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d4
+				MX8MN_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d4
+				MX8MN_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d4
+				MX8MN_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d4
+				MX8MN_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d4
+				MX8MN_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x1d4
+				MX8MN_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d4
+				MX8MN_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d4
+				MX8MN_IOMUXC_NAND_CLE_USDHC3_DATA7		0x1d4
+				MX8MN_IOMUXC_NAND_CE1_B_USDHC3_STROBE 		0x194
+			>;
+		};
+
+		pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
+			fsl,pins = <
+				MX8MN_IOMUXC_NAND_WE_B_USDHC3_CLK		0x196
+				MX8MN_IOMUXC_NAND_WP_B_USDHC3_CMD		0x1d6
+				MX8MN_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x1d6
+				MX8MN_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x1d6
+				MX8MN_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x1d6
+				MX8MN_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x1d6
+				MX8MN_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x1d6
+				MX8MN_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x1d6
+				MX8MN_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x1d6
+				MX8MN_IOMUXC_NAND_CLE_USDHC3_DATA7		0x1d6
+				MX8MN_IOMUXC_NAND_CE1_B_USDHC3_STROBE 		0x196
 			>;
 		};
 
@@ -343,6 +438,28 @@
 &uart4 { /* UART4: Debug UART */
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart4>;
+	status = "okay";
+};
+
+&usdhc2 {  /* USDHC2: Carrier Micro SD */
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
+	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
+	vmmc-supply = <&reg_3p3v>;
+	no-1-8-v;
+	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+	bus-width = <4>;
+	status = "okay";
+};
+
+&usdhc3 {  /*USDHC3: EMMC */
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-0 = <&pinctrl_usdhc3>;
+	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
+	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
+	bus-width = <8>;
+	non-removable;
 	status = "okay";
 };
 

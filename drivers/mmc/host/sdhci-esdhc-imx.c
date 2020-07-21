@@ -255,7 +255,10 @@ static struct esdhc_soc_data usdhc_imx8mm_data = {
 	.flags = ESDHC_FLAG_USDHC | ESDHC_FLAG_STD_TUNING
 			| ESDHC_FLAG_HAVE_CAP1 | ESDHC_FLAG_HS200
 			| ESDHC_FLAG_HS400 | ESDHC_FLAG_HS400_ES
+#ifndef CONFIG_IWG37M
+/* IWG37M: MMC: Disabling CQE Recovery Support */
 			| ESDHC_FLAG_CQHCI
+#endif
 			| ESDHC_FLAG_STATE_LOST_IN_LPMODE
 			| ESDHC_FLAG_BUSFREQ,
 };
