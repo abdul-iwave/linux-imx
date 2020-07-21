@@ -523,6 +523,13 @@
 			>;
 		};
 
+		pinctrl_usbotg: usb2grp {  /*USB1: USB OTG IOMUX Pin COnfiguration */
+			fsl,pins = <
+				MX8MN_IOMUXC_GPIO1_IO12_GPIO1_IO12		0x41
+				MX8MN_IOMUXC_GPIO1_IO13_GPIO1_IO13		0x41
+			>;
+		};
+
 		pinctrl_wdog: wdoggrp { /* WATCHDOG: IOMUX Pin Configuration */
 			fsl,pins = <
 				MX8MN_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
@@ -955,6 +962,15 @@
 		1200000 850000
 	>;
 	arm-supply = <&buck2>;
+};
+
+&usbotg1 { /* USB1: USB OTG */
+	pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_usbotg>;
+	dr_mode = "otg";
+	otg-pwr-gpio = <&gpio1 12 GPIO_ACTIVE_LOW>;
+	otg-oc-gpio = <&gpio1 13 GPIO_ACTIVE_LOW>;
+	status = "okay";
 };
 
 &gpu { /* GPU */

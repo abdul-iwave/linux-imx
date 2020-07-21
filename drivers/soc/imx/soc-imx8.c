@@ -414,6 +414,27 @@ static void print_carrier_board_info (void)
 	printk ("\tCarrier Board Version     : iW-PREVD-01-R2.%x\n", bom_rev);
 	printk ("\n");
 }
+
+static void iwg_usb_otg (void)
+{
+	struct device_node *np;
+	static int usb_oc_gpio;
+
+	np = of_find_node_by_path("/usb@32e40000");
+	if (!np) {
+		pr_warn("failed to find USB OTG node\n");
+		goto put_node;
+	}
+
+	usb_oc_gpio = of_get_named_gpio(np, "otg-oc-gpio", 0);
+	if (gpio_is_valid(usb_oc_gpio) &&
+			!gpio_request_one(usb_oc_gpio, GPIOF_DIR_IN, "usb-oc")) {
+		gpio_direction_input(usb_oc_gpio);
+	}
+
+put_node:
+	of_node_put(np);
+}
 #endif
 
 static int __init imx8_soc_init(void)
@@ -459,6 +480,7 @@ static int __init imx8_soc_init(void)
 	print_board_info();
 	/* IWG37M: Carrier Board info print */
 	print_carrier_board_info();
+	iwg_usb_otg();
 #endif
 
 	return 0;
