@@ -100,6 +100,59 @@
 			>;
 		};
 
+		pinctrl_flexspi0: flexspi0grp { /* QSPI : IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_NAND_ALE_QSPI_A_SCLK 		0x1c4
+				MX8MN_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B 		0x84
+
+				MX8MN_IOMUXC_NAND_DATA00_QSPI_A_DATA0 		0x84
+				MX8MN_IOMUXC_NAND_DATA01_QSPI_A_DATA1 		0x84
+				MX8MN_IOMUXC_NAND_DATA02_QSPI_A_DATA2 		0x84
+			>;
+		};
+
+		pinctrl_ecspi1: ecspi1grp { /* ECSPI : ECSPI1 IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_ECSPI1_SCLK_ECSPI1_SCLK		0x82
+				MX8MN_IOMUXC_ECSPI1_MOSI_ECSPI1_MOSI		0x82
+				MX8MN_IOMUXC_ECSPI1_MISO_ECSPI1_MISO		0x82
+			>;
+		};
+
+		pinctrl_ecspi1_cs: ecspi1cs { /* ECSPI : ECSPI1 SS IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_ECSPI1_SS0_GPIO5_IO9		0x40000
+			>;
+		};
+
+		pinctrl_ecspi2: ecspi2grp { /* ECSPI : ECSPI2 IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK		0x82
+				MX8MN_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI		0x82
+				MX8MN_IOMUXC_ECSPI2_MISO_ECSPI2_MISO		0x82
+			>;
+		};
+
+		pinctrl_ecspi2_cs: ecspi2cs { /* ECSPI : ECSPI2 SS IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_ECSPI2_SS0_GPIO5_IO13		0x40000
+			>;
+		};
+
+		pinctrl_ecspi3: ecspi3grp { /* ECSPI : ECSPI3 IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_UART1_RXD_ECSPI3_SCLK		0x82
+				MX8MN_IOMUXC_UART1_TXD_ECSPI3_MOSI		0x82
+				MX8MN_IOMUXC_UART2_RXD_ECSPI3_MISO		0x82
+			>;
+		};
+
+		pinctrl_ecspi3_cs: ecspi3cs { /* ECSPI : ECSPI2 SS IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_UART2_TXD_GPIO5_IO25		0x40000
+			>;
+		};
+
 		pinctrl_i2c1: i2c1grp { /* I2C1: IOMUX Pin Configuration */
 			fsl,pins = <
 				MX8MN_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
@@ -258,6 +311,51 @@
 			>;
 		};
 	};
+};
+
+&flexspi { /* QSPI: SPI */
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexspi0>;
+	status = "disabled";
+
+	flash0: mt25qu256aba@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "micron,mt25qu256aba";
+		spi-max-frequency = <80000000>;
+		spi-nor,ddr-quad-read-dummy = <6>;
+	};
+};
+
+&ecspi1 { /* QSPI: ECSPI1 */
+	#address-cells = <1>;
+	#size-cells = <0>;
+	fsl,spi-num-chipselects = <1>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi1 &pinctrl_ecspi1_cs>;
+	cs-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
+	status = "disabled";
+};
+
+&ecspi2 { /* QSPI: ECSPI2 */
+	#address-cells = <1>;
+	#size-cells = <0>;
+	fsl,spi-num-chipselects = <1>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi2 &pinctrl_ecspi2_cs>;
+	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
+	status = "disabled";
+};
+
+&ecspi3 { /* QSPI: ECSPI3 */
+	#address-cells = <1>;
+	#size-cells = <0>;
+	fsl,spi-num-chipselects = <1>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi3 &pinctrl_ecspi3_cs>;
+	cs-gpios = <&gpio5 25 GPIO_ACTIVE_LOW>;
+	status = "disabled";
 };
 
 &i2c1 { /* I2C: I2C1 Bus */
