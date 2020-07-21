@@ -27,6 +27,11 @@ enum { LSB, CSB, MSB };
 /* No variant has more than 24 GPIOs */
 #define CACHE_NR_BANKS	(24 / 8)
 
+#ifdef CONFIG_IWG37M
+unsigned carrier_gpio, carrier_ngpio, values[4];
+int bom_offset;
+#endif
+
 struct stmpe_gpio {
 	struct gpio_chip chip;
 	struct stmpe *stmpe;
@@ -501,6 +506,16 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, stmpe_gpio);
+
+#ifdef CONFIG_IWG37M
+	carrier_gpio = stmpe_gpio->chip.base;
+	carrier_ngpio = stmpe_gpio->chip.ngpio;
+	for (bom_offset = 0; bom_offset < carrier_ngpio; bom_offset++, carrier_gpio++) {
+		stmpe_gpio_request(&stmpe_gpio->chip, bom_offset);
+		stmpe_gpio_get_direction(&stmpe_gpio->chip, bom_offset);
+		values[bom_offset] = stmpe_gpio_get(&stmpe_gpio->chip, bom_offset);
+	}
+#endif
 
 	return 0;
 

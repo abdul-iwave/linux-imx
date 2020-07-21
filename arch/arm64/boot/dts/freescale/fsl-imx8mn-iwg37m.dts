@@ -80,6 +80,16 @@
 &iomuxc {
 
 	imx8mn-iwg37m {
+		pinctrl_hog: hoggrp { /* iWave hog Pin Configuration */
+			fsl,pins = <
+				/* GPIO: Expansion Header GPIO IOMUX Pin Configuration */
+				MX8MN_IOMUXC_GPIO1_IO06_GPIO1_IO6		0x41
+				/* GPIO: GPIO Header GPIO IOMUX Pin Configuration */
+				MX8MN_IOMUXC_SAI5_RXFS_GPIO3_IO19		0x41
+				MX8MN_IOMUXC_SAI5_RXC_GPIO3_IO20		0x41
+			>;
+		};
+
 		pinctrl_i2c1: i2c1grp { /* I2C1: IOMUX Pin Configuration */
 			fsl,pins = <
 				MX8MN_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
@@ -100,6 +110,12 @@
 				MX8MN_IOMUXC_I2C3_SDA_I2C3_SDA			0x400001c3
 			>;
 		};
+
+		pinctrl_stmpe: stmpeirq { /* STMPE: IOMUX Pin Configuration */
+                        fsl,pins = <
+				MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7		0x41
+                        >;
+                };
 
 		pinctrl_pmic: pmicirq { /* PMIC: IOMUX Pin Configuration */
 			fsl,pins = <
@@ -256,6 +272,22 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c2>;
 	status = "okay";
+
+	stmpe0: stmpe811@44 { /* STMPE811: Carrier Board GPIO Expander */
+                compatible = "st,stmpe811";
+		#address-cells = <1>;
+                #size-cells = <0>;
+                reg = <0x44>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_stmpe>;
+		irq-gpio = <&gpio1 7 IRQ_TYPE_EDGE_RISING>;
+	
+		stmpe_gpio0: stmpe_gpio {
+			compatible = "st,stmpe-gpio";
+                        #gpio-cells = <2>;
+			gpio-controller;
+		};
+        };
 };
 
 &i2c3 { /* I2C: I2C3 Bus */
