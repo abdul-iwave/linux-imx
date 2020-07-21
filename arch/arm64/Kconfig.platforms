@@ -342,4 +342,12 @@ config ARCH_FSL_IMX8MN
 	help
           This enables support for Freescale i.MX8MN SOC.
 
+config IWG37M
+        bool "Enable Support for iWave IWG37M Platform"
+        depends on ARCH_FSL_IMX8MN
+        default y
+        help
+          This enables support for the iWave's IWG37M Platform. If you don't
+          know what to do here, say N
+
 endmenu

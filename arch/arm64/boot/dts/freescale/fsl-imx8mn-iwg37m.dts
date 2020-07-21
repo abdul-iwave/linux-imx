@@ -1,0 +1,52 @@
+/*
+ * Copyright (C) 2020 iWave System Technologies Pvt Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "fsl-imx8mn.dtsi"
+
+/ {
+	model = "iW-RainboW-G37M-i.MX8MN-SODIMM";
+	compatible = "fsl,imx8mn-iwg37m", "fsl,imx8mn";
+
+	memory@40000000 { /* RAM: 1GB Memory support */
+		device_type = "memory";
+		reg = <0x0 0x40000000 0 0x40000000>;
+	};
+
+	reserved-memory { /* RAM: 1GB Memory support */
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		/* global autoconfigured region for contiguous allocations */
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			size = <0 0x14000000>;
+			alloc-ranges = <0 0x40000000 0 0x30000000>;
+			linux,cma-default;
+		};
+
+		rpmsg_reserved: rpmsg@0xb8000000 {
+			no-map;
+			reg = <0 0x78000000 0 0x400000>;
+		};
+	};
+};
+
+&gpu { /* GPU */
+	reg = <0x0 0x38000000 0 0x40000>, <0x0 0x40000000 0x0 0x40000000>, <0x0 0x0 0x0 0x4000000>;
+	status = "okay";
+};
