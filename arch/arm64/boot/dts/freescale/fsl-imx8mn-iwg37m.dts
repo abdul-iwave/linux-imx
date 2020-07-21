@@ -77,6 +77,48 @@
 		};
 	};
 
+	pwm_backlight1: pwm-backlight1 { /* PWM: PWM1 backlight Control */
+		compatible = "pwm-backlight";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_pwm1>;
+		pwms = <&pwm1 0 100000 0>;
+
+		brightness-levels = < 0 1 2 3 4 5 6 7 8 9
+				10 11 12 13 14 15 16 17 18 19
+				20 21 22 23 24 25 26 27 28 29
+				30 31 32 33 34 35 36 37 38 39
+				40 41 42 43 44 45 46 47 48 49
+				50 51 52 53 54 55 56 57 58 59
+				60 61 62 63 64 65 66 67 68 69
+				70 71 72 73 74 75 76 77 78 79
+				80 81 82 83 84 85 86 87 88 89
+				90 91 92 93 94 95 96 97 98 99
+				100>;
+		default-brightness-level = <100>;
+		status = "okay";
+	};
+
+	pwm_backlight2: pwm-backlight2 { /* PWM: PWM2 backlight Control */
+		compatible = "pwm-backlight";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_pwm2>;
+		pwms = <&pwm2 0 100000 0>;
+
+		brightness-levels = < 0 1 2 3 4 5 6 7 8 9
+				10 11 12 13 14 15 16 17 18 19
+				20 21 22 23 24 25 26 27 28 29
+				30 31 32 33 34 35 36 37 38 39
+				40 41 42 43 44 45 46 47 48 49
+				50 51 52 53 54 55 56 57 58 59
+				60 61 62 63 64 65 66 67 68 69
+				70 71 72 73 74 75 76 77 78 79
+				80 81 82 83 84 85 86 87 88 89
+				90 91 92 93 94 95 96 97 98 99
+				100>;
+		default-brightness-level = <100>;
+		status = "okay";
+	};
+
 	iwg37m_common { /* SoC Board Setttings : Board Configuration GPIOs */
 		compatible = "iw,iwg37m-com";
 		pinctrl-names = "default";
@@ -97,6 +139,18 @@
 				/* GPIO: GPIO Header GPIO IOMUX Pin Configuration */
 				MX8MN_IOMUXC_SAI5_RXFS_GPIO3_IO19		0x41
 				MX8MN_IOMUXC_SAI5_RXC_GPIO3_IO20		0x41
+			>;
+		};
+
+		pinctrl_pwm1: pwm1grp { /* PWM: PWM1 IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_I2C4_SDA_PWM1_OUT			0x400001c3
+			>;
+		};
+
+		pinctrl_pwm2: pwm2grp { /* PWM: PWM2 IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_I2C4_SCL_PWM2_OUT			0x400001c3
 			>;
 		};
 
@@ -522,6 +576,14 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c3>;
 	status = "okay";
+};
+
+&pwm1 { /* PWM: PWM1 Control */
+        status = "okay";
+};
+
+&pwm2 { /* PWM: PWM2 Control */
+        status = "okay";
 };
 
 &uart2 { /* UART2: Data UART */
