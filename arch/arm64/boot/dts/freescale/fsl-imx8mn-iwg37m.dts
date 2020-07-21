@@ -44,6 +44,32 @@
 			reg = <0 0x78000000 0 0x400000>;
 		};
 	};
+
+	iwg37m_common { /* SoC Board Setttings : Board Configuration GPIOs */
+		compatible = "iw,iwg37m-com";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_board_cfg>;
+		som-rev-gpios = <&gpio1 9 0 &gpio5 1 0 &gpio4 25 0 &gpio4 26 0
+				&gpio4 27 0 &gpio2 19 0 &gpio2 20 0 >;
+		status = "okay";
+	};
+};
+
+&iomuxc {
+
+	imx8mn-iwg37m {
+		pinctrl_board_cfg: brd_cfg { /* SoC Board Settings: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x1d0
+				MX8MN_IOMUXC_SAI3_TXD_GPIO5_IO1			0x1d5
+				MX8MN_IOMUXC_SAI2_TXC_GPIO4_IO25		0x1d5
+				MX8MN_IOMUXC_SAI2_TXD0_GPIO4_IO26		0x1d5
+				MX8MN_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x1d5
+				MX8MN_IOMUXC_SD2_RESET_B_GPIO2_IO19		0x1d5
+				MX8MN_IOMUXC_SD2_WP_GPIO2_IO20			0x1d5
+			>;
+		};
+	};
 };
 
 &gpu { /* GPU */
