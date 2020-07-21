@@ -23,6 +23,7 @@
 	aliases { /* SD/MMC: eMMC/SD slot numbering fix */
                 mmc0 = &usdhc3;
                 mmc1 = &usdhc2;
+                mmc2 = &usdhc1;
         };
 
 	chosen {
@@ -69,6 +70,13 @@
 		reset-delay-us = <2000>;
 		reset-post-delay-ms = <40>;
 		#reset-cells = <0>;
+	};
+
+	usdhc1_pwrseq: usdhc1_pwrseq { /* WIFI: WIFI power sequence */
+		compatible = "mmc-pwrseq-simple";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_usdhc1_gpio>;
+		reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
 	};
 
 	regulators {
@@ -311,6 +319,57 @@
 			fsl,pins = <
 				MX8MN_IOMUXC_UART4_RXD_UART4_DCE_RX		0x140
 				MX8MN_IOMUXC_UART4_TXD_UART4_DCE_TX		0x140
+			>;
+		};
+
+		pinctrl_wlan: wlangrp { /* WiFi: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_SD1_DATA7_GPIO2_IO9		0x111 /* WIFI Host Wake GPIO */
+			>;
+		};
+
+		pinctrl_usdhc1_gpio: usdhc1grpgpio {
+			fsl,pins = <
+				MX8MN_IOMUXC_SD1_RESET_B_GPIO2_IO10		0x41 /* USDHC1: WiFi: Reset GPIO IOMUX Pin Configuration */
+			>;
+		};
+
+		pinctrl_usdhc1: usdhc1grp { /* USDHC1: SOM Micro SD/WiFi: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_SD1_CLK_USDHC1_CLK			0x190
+				MX8MN_IOMUXC_SD1_CMD_USDHC1_CMD			0x1d0
+				MX8MN_IOMUXC_SD1_DATA0_USDHC1_DATA0		0x1d0
+				MX8MN_IOMUXC_SD1_DATA1_USDHC1_DATA1		0x1d0
+				MX8MN_IOMUXC_SD1_DATA2_USDHC1_DATA2		0x1d0
+				MX8MN_IOMUXC_SD1_DATA3_USDHC1_DATA3		0x1d0
+				MX8MN_IOMUXC_SD1_STROBE_GPIO2_IO11      	0x159
+				MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3       	0x016
+			>;
+		};
+
+		pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
+			fsl,pins = <
+				MX8MN_IOMUXC_SD1_CLK_USDHC1_CLK			0x194
+				MX8MN_IOMUXC_SD1_CMD_USDHC1_CMD			0x1d4
+				MX8MN_IOMUXC_SD1_DATA0_USDHC1_DATA0		0x1d4
+				MX8MN_IOMUXC_SD1_DATA1_USDHC1_DATA1		0x1d4
+				MX8MN_IOMUXC_SD1_DATA2_USDHC1_DATA2		0x1d4
+				MX8MN_IOMUXC_SD1_DATA3_USDHC1_DATA3		0x1d4
+				MX8MN_IOMUXC_SD1_STROBE_GPIO2_IO11      	0x159
+				MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3       	0x016
+			>;
+		};
+
+		pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
+			fsl,pins = <
+				MX8MN_IOMUXC_SD1_CLK_USDHC1_CLK			0x196
+				MX8MN_IOMUXC_SD1_CMD_USDHC1_CMD			0x1d6
+				MX8MN_IOMUXC_SD1_DATA0_USDHC1_DATA0		0x1d6
+				MX8MN_IOMUXC_SD1_DATA1_USDHC1_DATA1		0x1d6
+				MX8MN_IOMUXC_SD1_DATA2_USDHC1_DATA2		0x1d6
+				MX8MN_IOMUXC_SD1_DATA3_USDHC1_DATA3		0x1d6
+				MX8MN_IOMUXC_SD1_STROBE_GPIO2_IO11      	0x159
+				MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3       	0x016
 			>;
 		};
 
@@ -727,6 +786,29 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart4>;
 	status = "okay";
+};
+
+&usdhc1 { /* USDHC1: WiFi */
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-0 = <&pinctrl_usdhc1>, <&pinctrl_wlan>;
+	pinctrl-1 = <&pinctrl_usdhc1_100mhz>, <&pinctrl_wlan>;
+	pinctrl-2 = <&pinctrl_usdhc1_200mhz>, <&pinctrl_wlan>;
+	mmc-pwrseq = <&usdhc1_pwrseq>;
+	bus-width = <4>;
+	non-removable;
+	wifi-host;
+	status = "okay";
+
+	brcmf: bcrmf@1 {
+		reg = <1>;
+		compatible = "brcm,bcm4329-fmac";
+		interrupt-parent = <&gpio2>;
+		interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-names = "host-wake";
+		status = "okay";
+	};
 };
 
 &usdhc2 {  /* USDHC2: Carrier Micro SD */
