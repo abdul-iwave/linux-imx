@@ -234,6 +234,13 @@
 			>;
 		};
 
+		pinctrl_ts_active: tsgrp { /* MIPI DSI: Touch: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_GPIO1_IO01_GPIO1_IO1		0x154 /* Touch Interface Reset GPIO */
+				MX8MN_IOMUXC_GPIO1_IO08_GPIO1_IO8		0x41  /* Touch Interface Interrupt GPIO */
+			>;
+		};
+
 		pinctrl_stmpe: stmpeirq { /* STMPE: IOMUX Pin Configuration */
                         fsl,pins = <
 				MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7		0x41
@@ -582,6 +589,21 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c3>;
 	status = "okay";
+
+	cst148@1a { /* Touch: Hynitron Touch panel (1080p display) */
+		compatible = "hynitron,cst1xx";
+		reg = <0x1a>;
+		vdd_ana-supply = <&reg_3p3v>;
+		vcc_i2c-supply = <&reg_3p3v>;
+		hynitron,panel-coords = <0 1080 0 1920>;
+		hynitron,display-coords = <0 1080 0 1920>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_ts_active>;
+		hynitron,irq-gpio = <&gpio1 8 GPIO_ACTIVE_LOW>;
+		hynitron,rst-gpio = <&gpio1 1 GPIO_ACTIVE_LOW>;
+		report_type = <1>;
+		status = "okay";
+        };
 };
 
 &pwm1 { /* PWM: PWM1 Control */
