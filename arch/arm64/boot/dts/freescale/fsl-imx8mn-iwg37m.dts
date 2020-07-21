@@ -142,6 +142,12 @@
 			>;
 		};
 
+		pinctrl_mipi_dsi_en: mipi_dsi_en { /* MIPI DSI: LCD IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_SAI3_MCLK_GPIO5_IO2		0x16 /* MIPI LCD Reset GPIO */
+			>;
+		};
+
 		pinctrl_pwm1: pwm1grp { /* PWM: PWM1 IOMUX Pin Configuration */
 			fsl,pins = <
 				MX8MN_IOMUXC_I2C4_SDA_PWM1_OUT			0x400001c3
@@ -584,6 +590,29 @@
 
 &pwm2 { /* PWM: PWM2 Control */
         status = "okay";
+};
+
+&lcdif {
+	status = "okay";
+};
+
+&mipi_dsi { /* MIPI DSI: 1080p MIPI Display */
+	status = "okay";
+
+	panel@0 {
+		compatible = "raydium,rm67198";
+		reg = <0>;
+		pinctrl-0 = <&pinctrl_mipi_dsi_en>;
+		reset-gpio = <&gpio5 2 GPIO_ACTIVE_HIGH>;
+		dsi-lanes = <4>;
+		video-mode = <1>;/* 0: burst mode
+				  * 1: non-burst mode with sync event
+				  * 2: non-burst mode with sync pulse
+				  */
+		panel-width-mm = <68>;
+		panel-height-mm = <122>;
+		status = "okay";
+	};
 };
 
 &uart2 { /* UART2: Data UART */

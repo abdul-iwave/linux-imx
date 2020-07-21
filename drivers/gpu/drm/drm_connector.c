@@ -64,6 +64,11 @@ struct drm_conn_prop_enum_list {
 	struct ida ida;
 };
 
+#ifdef CONFIG_IWG37M
+/* IWG37M: DRM: Store Display DRM connector type globally */
+int connect_type;
+#endif
+
 /*
  * Connector and encoder types.
  */
@@ -174,6 +179,11 @@ int drm_connector_init(struct drm_device *dev,
 	int ret;
 	struct ida *connector_ida =
 		&drm_connector_enum_list[connector_type].ida;
+
+#ifdef CONFIG_IWG37M
+	/* IWG37M: DRM: Store Display DRM connector type globally */
+	connect_type = connector_type;
+#endif
 
 	ret = __drm_mode_object_add(dev, &connector->base,
 				    DRM_MODE_OBJECT_CONNECTOR,

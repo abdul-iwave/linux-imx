@@ -81,6 +81,12 @@
 
 #include "fbcon.h"
 
+#ifdef CONFIG_IWG37M
+#include <drm/drm_mode.h>
+/* IWG37M: DRM: Store Display DRM connector type globally */
+extern int connect_type;
+#endif
+
 #ifdef FBCONDEBUG
 #  define DPRINTK(fmt, args...) printk(KERN_DEBUG "%s: " fmt, __func__ , ## args)
 #else
@@ -197,8 +203,18 @@ static inline void fbcon_set_rotation(struct fb_info *info)
 	struct fbcon_ops *ops = info->fbcon_par;
 
 	if (!(info->flags & FBINFO_MISC_TILEBLITTING) &&
-	    ops->p->con_rotate < 4)
+			ops->p->con_rotate < 4){
+#ifdef CONFIG_IWG37M
+		/* IWG37M: MIPI-DSI: Frame Buffer Rotation only for MIPI DSI Display */
+		if(connect_type == DRM_MODE_CONNECTOR_DSI)
+			ops->rotate = 2;
+
+		else
+			ops->rotate = ops->p->con_rotate;
+	}
+#else
 		ops->rotate = ops->p->con_rotate;
+#endif
 	else
 		ops->rotate = 0;
 }
