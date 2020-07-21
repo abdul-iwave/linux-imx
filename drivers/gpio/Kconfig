@@ -348,6 +348,13 @@ config GPIO_MXC
 	select GPIO_GENERIC
 	select GENERIC_IRQ_CHIP
 
+config IMX8MN_UNUSED_GPIO
+	def_bool y
+	boolean "iWave unused GPIO"
+	depends on OF_GPIO && IWG37M 
+	help
+	 Say yes here to set the unused GPIOs as input in iW-RainboW-G37M platform.
+
 config GPIO_MXS
 	def_bool y
 	depends on ARCH_MXS

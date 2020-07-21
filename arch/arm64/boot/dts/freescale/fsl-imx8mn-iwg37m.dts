@@ -85,6 +85,13 @@
 		reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
 	};
 
+	unused_gpios: unused_gpios { /* GPIO: Setting Unused GPIOs as input pins */
+		compatible = "iwave,unused-gpios";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_unused_gpio>;
+		status = "okay";              
+	};
+
 	regulators {
 		compatible = "simple-bus";
 		#address-cells = <1>;
@@ -533,6 +540,20 @@
 		pinctrl_wdog: wdoggrp { /* WATCHDOG: IOMUX Pin Configuration */
 			fsl,pins = <
 				MX8MN_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
+			>;
+		};
+
+		pinctrl_unused_gpio: unused_gpiogrp{
+			fsl,pins = <
+				/* GPIO: Unused GPIO IOMUX Pin Configuration */
+				MX8MN_IOMUXC_GPIO1_IO00_GPIO1_IO0		0x41
+				MX8MN_IOMUXC_GPIO1_IO10_GPIO1_IO10		0x41
+				MX8MN_IOMUXC_GPIO1_IO11_GPIO1_IO11		0x41
+				MX8MN_IOMUXC_GPIO1_IO14_GPIO1_IO14		0x41
+				MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15		0x41
+				MX8MN_IOMUXC_SPDIF_TX_GPIO5_IO3			0x41
+				MX8MN_IOMUXC_SPDIF_RX_GPIO5_IO4			0x41
+				MX8MN_IOMUXC_SPDIF_EXT_CLK_GPIO5_IO5		0x41
 			>;
 		};
 	};
@@ -1000,4 +1021,15 @@
 
 &cameradev { /* Multimedia: Camera device */
 	status = "okay";
+};
+
+&unused_gpios { /* GPIO: iWave Unused GPIO pins */
+	gpios = <&gpio1 0 0>,
+		<&gpio1 10 0>,
+		<&gpio1 11 0>,
+		<&gpio1 14 0>,
+		<&gpio1 15 0>,
+		<&gpio5 3 0>,
+		<&gpio5 4 0>,
+		<&gpio5 5 0>;
 };
