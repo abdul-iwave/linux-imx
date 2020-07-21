@@ -182,6 +182,17 @@ config REGULATOR_BD9571MWV
 	  This driver can also be built as a module. If so, the module
 	  will be called bd9571mwv-regulator.
 
+config REGULATOR_BD718XX
+	tristate "ROHM BD71837 Power Regulator"
+	depends on MFD_ROHM_BD718XX
+	help
+	  This driver supports voltage regulators on ROHM BD71837 PMIC.
+	  This will enable support for the software controllable buck
+	  and LDO regulators.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called bd718x7-regulator.
+
 config REGULATOR_CPCAP
 	tristate "Motorola CPCAP regulator"
 	depends on MFD_CPCAP

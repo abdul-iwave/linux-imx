@@ -45,6 +45,28 @@
 		};
 	};
 
+	/* external oscillator node */
+	osc: oscillator {
+		compatible = "fixed-clock";
+		#clock-cells = <1>;
+		clock-frequency  = <32768>;
+		clock-output-names = "osc";
+	};
+
+	regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		reg_3p3v: 3p3v { /* Fixed Regulator: common 3.3V Fixed regulator */
+			compatible = "regulator-fixed";
+			regulator-name = "3P3V";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-always-on;
+		};
+	};
+
 	iwg37m_common { /* SoC Board Setttings : Board Configuration GPIOs */
 		compatible = "iw,iwg37m-com";
 		pinctrl-names = "default";
@@ -58,6 +80,33 @@
 &iomuxc {
 
 	imx8mn-iwg37m {
+		pinctrl_i2c1: i2c1grp { /* I2C1: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
+				MX8MN_IOMUXC_I2C1_SDA_I2C1_SDA			0x400001c3
+			>;
+		};
+
+		pinctrl_i2c2: i2c2grp { /* I2C2: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_I2C2_SCL_I2C2_SCL			0x400001c3
+				MX8MN_IOMUXC_I2C2_SDA_I2C2_SDA			0x400001c3
+			>;
+		};
+
+		pinctrl_i2c3: i2c3grp { /* I2C3: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_I2C3_SCL_I2C3_SCL			0x400001c3
+				MX8MN_IOMUXC_I2C3_SDA_I2C3_SDA			0x400001c3
+			>;
+		};
+
+		pinctrl_pmic: pmicirq { /* PMIC: IOMUX Pin Configuration */
+			fsl,pins = <
+				MX8MN_IOMUXC_NAND_DQS_GPIO3_IO14		0x41 /* PMIC Interrupt GPIO */
+			>;
+		};
+
 		pinctrl_board_cfg: brd_cfg { /* SoC Board Settings: IOMUX Pin Configuration */
 			fsl,pins = <
 				MX8MN_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x1d0
@@ -70,6 +119,160 @@
 			>;
 		};
 	};
+};
+
+&i2c1 { /* I2C: I2C1 Bus */
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c1>;
+	status = "okay";
+	
+	pmic: pmic@4b { /* PMIC: PMIC BD71847MWV */
+		compatible = "rohm,bd71847";
+		reg = <0x4b>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_pmic>;
+		interrupt-parent = <&gpio3>;
+		interrupts = <14 GPIO_ACTIVE_LOW>;
+		interrupt-names = "irq";
+		#clock-cells = <0>;
+		clocks = <&osc 0>;
+		clock-output-names = "bd71837-32k-out";
+		rohm,reset-snvs-powered;
+		/* <run,idle,susp> */
+		rohm,pmic-buck1-dvs-voltage = <850000>, <850000>, <850000>;
+		rohm,pmic-buck2-dvs-voltage = <1000000>, <900000>;
+
+		regulators {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			buck1: BUCK1 {
+				reg = <0>;
+				regulator-name = "buck1";
+				regulator-min-microvolt = <805000>;
+				regulator-max-microvolt = <900000>;
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-ramp-delay = <1250>;
+				rohm,dvs-run-voltage = <850000>;
+				rohm,dvs-idle-voltage = <850000>;
+				rohm,dvs-suspend-voltage = <850000>;
+			};
+
+			buck2: BUCK2 {
+				reg = <1>;
+				regulator-name = "buck2";
+				regulator-min-microvolt = <700000>;
+				regulator-max-microvolt = <1300000>;
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-ramp-delay = <1250>;
+				rohm,dvs-run-voltage = <1000000>;
+				rohm,dvs-idle-voltage = <900000>;
+			};
+
+			buck3: BUCK3 {
+				reg = <2>;
+				regulator-name = "buck3";
+				regulator-min-microvolt = <700000>;
+				regulator-max-microvolt = <1300000>;
+				regulator-boot-on;
+				regulator-always-on;
+			};
+
+			buck4: BUCK4 {
+				reg = <3>;
+				regulator-name = "buck4";
+				regulator-min-microvolt = <2600000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-boot-on;
+				regulator-always-on;
+			};
+
+			buck5: BUCK5 {
+				reg = <4>;
+				regulator-name = "buck5";
+				regulator-min-microvolt = <1605000>;
+				regulator-max-microvolt = <1995000>;
+				regulator-boot-on;
+				regulator-always-on;
+			};
+
+			buck6: BUCK6 {
+				reg = <5>;
+				regulator-name = "buck6";
+				regulator-min-microvolt = <800000>;
+				regulator-max-microvolt = <1400000>;
+				regulator-boot-on;
+				regulator-always-on;
+			};
+
+			ldo1: LDO1 {
+				reg = <6>;
+				regulator-name = "ldo1";
+				regulator-min-microvolt = <1620000>;
+				regulator-max-microvolt = <1980000>;
+				regulator-boot-on;
+				regulator-always-on;
+			};
+			ldo2: LDO2 {
+				regulator-name = "ldo2";
+				regulator-min-microvolt = <760000>;
+				regulator-max-microvolt = <900000>;
+				regulator-boot-on;
+				regulator-always-on;
+			};
+			ldo3: LDO3 {
+				regulator-name = "ldo3";
+				regulator-min-microvolt = <1710000>;
+				regulator-max-microvolt = <1890000>;
+				regulator-always-on;
+			};
+			ldo4: LDO4 {
+				regulator-name = "ldo4";
+				regulator-min-microvolt = <850000>;
+				regulator-max-microvolt = <1000000>;
+				regulator-always-on;
+			};
+			ldo5: LDO5 {
+				regulator-name = "ldo5";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+			};
+			ldo6: LDO6 {
+				regulator-name = "ldo6";
+				regulator-min-microvolt = <1140000>;
+				regulator-max-microvolt = <1260000>;
+				regulator-always-on;
+			};
+		};
+	};
+};
+
+&i2c2 { /* I2C: I2C2 Bus */
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c2>;
+	status = "okay";
+};
+
+&i2c3 { /* I2C: I2C3 Bus */
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c3>;
+	status = "okay";
+};
+
+&A53_0 { /* A53 CPU Frequency OP */
+	operating-points = <
+		/* kHz    uV */
+		1500000 1000000
+		1400000 950000
+		1200000 850000
+	>;
+	arm-supply = <&buck2>;
 };
 
 &gpu { /* GPU */
